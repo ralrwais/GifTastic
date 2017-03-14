@@ -1,0 +1,111 @@
+</!DOCTYPE html>
+<html>
+<head>
+	<title>Giphy time!</title>
+</head>
+<body>
+
+	<div class="container"></div>
+	<div id="buttons-here"></div>
+
+	<form id="gif-form">
+      <label for="gif-input">Pick a New Animal!</label>
+      <input type="text" id="gif-input"><br>
+      <input id="add-gif" type="submit" value="Pick a new animal!">
+    </form>
+	
+	<div id="gifs-here">
+			
+	</div>
+	<div class="giphy"> </div>
+
+	<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript">
+ 
+ 	//http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC
+
+    var topics = ["Cats", "Dogs", "Pigs", "Sharks",];
+
+    function displayGifInfo() {
+
+    	var gifs = $(this).attr("data-animal");
+    	var queryURL = "http://api.giphy.com/v1/gifs/trending?" + gifs + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+    	$.ajax({
+    		url: queryURL,
+    		method: "GET"
+    	}).done(function(response) {
+
+    	var gifs = response.data
+
+    	for (var i = 0; i < gifs.length; i++) {
+  		 var gif = gifs[i];
+
+ 		 var rating = gif.rating;
+ 		 var url = gif.url;
+ 		 var pic = gif.images;
+    	 
+    	 var ratingP = $("<p>").text("Rating" + rating);
+    	 var urlHere = $("<p>").text("URL" + url);
+    	 var picHere = $("<img>", "src").html(pic);
+
+    	 var gifDiv = $("<div class='giphy'>");
+
+    	//var rating = response.data[0].rating;
+
+    	 // gifDiv.append(rating); (ask TA about these and how they should be set up)
+
+    	 // gifDiv.append(url);
+
+    	 $("#gifs-here").prepend(urlHere);
+
+    	 $("#gifs-here").prepend(ratingP);
+
+    	 console.log(response);
+
+    	}
+   		 });
+    	};
+   	
+
+    	
+
+    function renderButtons () {
+
+    	$("#buttons-here").empty();
+
+    	for (var i = 0; i < topics.length; i++) {
+
+    		var a = $("<button>");
+
+    		a.addClass("giphy");
+
+    		a.attr("data-animal", topics[i]);
+
+    		a.text(topics[i]);
+
+    		$("#buttons-here").append(a);
+
+    	}
+    }
+
+    $("#add-gif").on("click", function(event) {
+    	event.preventDefault();
+
+    	var gif = $("#gif-input").val().trim();
+
+    	topics.push(gif);
+
+    	renderButtons();
+    });
+
+    $(document).on("click", ".giphy", displayGifInfo);
+
+    renderButtons();
+
+
+
+    </script>
+
+</body>
+</html>
